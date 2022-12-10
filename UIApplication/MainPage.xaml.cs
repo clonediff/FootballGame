@@ -1,4 +1,4 @@
-﻿namespace UIApplication;
+﻿namespace Sem2_Test;
 
 public partial class MainPage : ContentPage
 {
@@ -20,5 +20,10 @@ public partial class MainPage : ContentPage
 
 		SemanticScreenReader.Announce(CounterBtn.Text);
 	}
+
+    private async void OnStartClicked(object sender, EventArgs e)
+    {
+        await Navigation.PushAsync(new GamePage());
+    }
 }
 
