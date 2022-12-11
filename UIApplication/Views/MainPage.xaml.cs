@@ -1,4 +1,6 @@
-﻿namespace Sem2_Test;
+﻿using UIApplication.Models;
+
+namespace UIApplication.Views;
 
 public partial class MainPage : ContentPage
 {
@@ -23,7 +25,16 @@ public partial class MainPage : ContentPage
 
     private async void OnStartClicked(object sender, EventArgs e)
     {
-        await Navigation.PushAsync(new GamePage());
+		if (YourPck.SelectedItem is null || OpponentPck.SelectedItem is null)
+			ErrorLbl.IsVisible = true;
+		else
+        {
+            await Navigation.PushAsync(new GamePage(new Game
+            {
+                TeamA = YourPck.SelectedItem.ToString(),
+                TeamB = OpponentPck.SelectedItem.ToString()
+            }));
+        }
     }
 }
 

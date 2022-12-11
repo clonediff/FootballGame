@@ -1,0 +1,137 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="UIApplication.Views.MainPage">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Spacing="25"
+            Padding="30,0"
+            VerticalOptions="Center">
+
+            <Image
+                Source="dotnet_bot.png"
+                SemanticProperties.Description="Cute dot net bot waving hi to you!"
+                HeightRequest="200"
+                HorizontalOptions="Center" />
+
+            <Label
+                Text="Hello, World!"
+                SemanticProperties.HeadingLevel="Level1"
+                FontSize="32"
+                HorizontalOptions="Center" />
+
+            <Label
+                Text="Welcome to .NET Multi-platform App UI"
+                SemanticProperties.HeadingLevel="Level2"
+                SemanticProperties.Description="Welcome to dot net Multi platform App U I"
+                FontSize="18"
+                HorizontalOptions="Center" />
+
+            <Button
+                x:Name="CounterBtn"
+                Text="Click me"
+                SemanticProperties.Hint="Counts the number of times you click"
+                Clicked="OnCounterClicked"
+                HorizontalOptions="Center" />
+
+            <HorizontalStackLayout
+                HorizontalOptions="Center"
+                Spacing="100">
+                <Picker 
+                    x:Name="YourPck"
+                    Title="Select your team">
+                    <Picker.Items>
+                        <x:String>ARG</x:String>
+                        <x:String>AUS</x:String>
+                        <x:String>BEL</x:String>
+                        <x:String>BRA</x:String>
+                        <x:String>CAN</x:String>
+                        <x:String>CMR</x:String>
+                        <x:String>CRC</x:String>
+                        <x:String>CRO</x:String>
+                        <x:String>DEN</x:String>
+                        <x:String>ECU</x:String>
+                        <x:String>ENG</x:String>
+                        <x:String>ESP</x:String>
+                        <x:String>FRA</x:String>
+                        <x:String>GER</x:String>
+                        <x:String>GHA</x:String>
+                        <x:String>IRI</x:String>
+                        <x:String>JAP</x:String>
+                        <x:String>KOR</x:String>
+                        <x:String>KSA</x:String>
+                        <x:String>MAR</x:String>
+                        <x:String>MEX</x:String>
+                        <x:String>NED</x:String>
+                        <x:String>POL</x:String>
+                        <x:String>POR</x:String>
+                        <x:String>QAT</x:String>
+                        <x:String>SEN</x:String>
+                        <x:String>SRB</x:String>
+                        <x:String>SUI</x:String>
+                        <x:String>TUN</x:String>
+                        <x:String>URU</x:String>
+                        <x:String>USA</x:String>
+                        <x:String>WAL</x:String>
+                    </Picker.Items>
+                </Picker>
+
+                <Picker 
+                    x:Name="OpponentPck"
+                    Title="Select opponent team">
+                    <Picker.Items>
+                        <x:String>ARG</x:String>
+                        <x:String>AUS</x:String>
+                        <x:String>BEL</x:String>
+                        <x:String>BRA</x:String>
+                        <x:String>CAN</x:String>
+                        <x:String>CMR</x:String>
+                        <x:String>CRC</x:String>
+                        <x:String>CRO</x:String>
+                        <x:String>DEN</x:String>
+                        <x:String>ECU</x:String>
+                        <x:String>ENG</x:String>
+                        <x:String>ESP</x:String>
+                        <x:String>FRA</x:String>
+                        <x:String>GER</x:String>
+                        <x:String>GHA</x:String>
+                        <x:String>IRI</x:String>
+                        <x:String>JAP</x:String>
+                        <x:String>KOR</x:String>
+                        <x:String>KSA</x:String>
+                        <x:String>MAR</x:String>
+                        <x:String>MEX</x:String>
+                        <x:String>NED</x:String>
+                        <x:String>POL</x:String>
+                        <x:String>POR</x:String>
+                        <x:String>QAT</x:String>
+                        <x:String>SEN</x:String>
+                        <x:String>SRB</x:String>
+                        <x:String>SUI</x:String>
+                        <x:String>TUN</x:String>
+                        <x:String>URU</x:String>
+                        <x:String>USA</x:String>
+                        <x:String>WAL</x:String>
+                    </Picker.Items>
+                </Picker>
+            </HorizontalStackLayout>
+
+            <Label
+                x:Name="ErrorLbl"
+                Text="Chose all options"
+                HorizontalOptions="Center"
+                IsVisible="False">
+
+            </Label>
+
+            <Button
+                x:Name="StartBtn"
+                Text="Start game"
+                Clicked="OnStartClicked"
+                HorizontalOptions="Center" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
