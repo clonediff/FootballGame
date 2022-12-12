@@ -5,6 +5,8 @@ using System.Net.Sockets;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Protocol.Protocol;
+using Protocol;
 
 namespace Server
 {
@@ -48,12 +50,11 @@ namespace Server
         }
 
         // трансляция сообщения подключенным клиентам
-        protected internal async Task BroadcastMessageAsync(string message, string id)
+        protected internal async Task BroadcastMessageAsync(Packet packet, string id)
         {
             foreach (var client in clients)
             {
-                await client.Writer.WriteLineAsync(message); //передача данных
-                await client.Writer.FlushAsync();
+                await client.Stream.WritePacketAsync(packet);
             }
         }
         // отключение всех клиентов

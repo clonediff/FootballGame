@@ -17,5 +17,10 @@ namespace Protocol.Packets
 
         [Field(2)]
         public bool TestBoolean;
+
+        public override string ToString()
+        {
+            return $"TestNumber: {TestNumber}\tTestDouble: {TestDouble}\tTestBoolean: {TestBoolean}";
+        }
     }
 }

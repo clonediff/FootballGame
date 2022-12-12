@@ -10,17 +10,15 @@ namespace Protocol.Protocol
     public class Packet
     {
         public byte PacketType { get; private set; }
-        public byte PacketSubtype { get; private set; }
         public List<PacketField> Fields { get; set; } = new List<PacketField>();
 
         private Packet() { }
 
-        public static Packet Create(byte type, byte subType)
+        public static Packet Create(byte type)
         {
             return new Packet
             {
-                PacketType = type,
-                PacketSubtype = subType
+                PacketType = type
             };
         }
 
@@ -28,7 +26,7 @@ namespace Protocol.Protocol
         {
             var packet = new MemoryStream();
             packet.Write(
-                new byte[] { 0xAF, 0xAA, 0xAF, PacketType, PacketSubtype }, 0, 5);
+                new byte[] { 0xAF, 0xAA, 0xAF, PacketType }, 0, 4);
 
             var fields = Fields.OrderBy(x => x.FieldID);
 
@@ -59,11 +57,10 @@ namespace Protocol.Protocol
                 return null;
 
             var packetType = packet[3];
-            var packetSubType = packet[4];
 
-            var myPacket = Create(packetType, packetSubType);
+            var myPacket = Create(packetType);
 
-            var fields = packet.Skip(5).ToArray();
+            var fields = packet.Skip(4).ToArray();
 
             while (true)
             {

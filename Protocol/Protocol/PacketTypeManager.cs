@@ -7,19 +7,19 @@ using System.Threading.Tasks;
 
 namespace Protocol.Protocol
 {
-    internal static class PacketTypeManager
+    public static class PacketTypeManager
     {
-        static readonly Dictionary<PacketType, (byte, byte)> TypeDictionary = new();
+        static readonly Dictionary<PacketType, byte> TypeDictionary = new();
 
-        public static void RegisterType(PacketType type, byte btype, byte bsubType)
+        public static void RegisterType(PacketType type, byte btype)
         {
             if (TypeDictionary.ContainsKey(type))
                 throw new Exception($"Packet type {type:G} is already registered.");
 
-            TypeDictionary[type] = (btype, bsubType);
+            TypeDictionary[type] = btype;
         }
 
-        public static (byte, byte) GetType(PacketType type)
+        public static byte GetType(PacketType type)
         {
             if (!TypeDictionary.ContainsKey(type))
                 throw new Exception($"Packet type {type:G} is not registered.");
@@ -30,10 +30,9 @@ namespace Protocol.Protocol
         public static PacketType GetTypeFromPacket(Packet packet)
         {
             var packetType = packet.PacketType;
-            var packetSubType = packet.PacketSubtype;
 
-            foreach (var (myPacketType, (type, subType)) in TypeDictionary)
-                if (type == packetType && subType == packetSubType)
+            foreach (var (myPacketType, type) in TypeDictionary)
+                if (type == packetType)
                     return myPacketType;
 
             return PacketType.Unknown;

@@ -1,10 +1,8 @@
 ﻿PROTOCOL PACKET STRUCTURE
  
 (offset: 0) HEADER (3 bytes) [ 0xAF, 0xAA, 0xAF ]
-(offset: 3) PACKET ID
-  (offset: 3) PACKET TYPE (1 byte)
-  (offset: 4) PACKET SUBTYPE (1 byte)
-(offset: 5) FIELDS (FIELD[])
+(offset: 3) PACKET TYPE (1 byte)
+(offset: 4) FIELDS (FIELD[])
 (offset: END) PACKET ENDING (2 bytes) [ 0xFF, 0x00 ]
  
 FIELD STRUCTURE

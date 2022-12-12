@@ -2,7 +2,7 @@
 
 namespace Protocol.Protocol
 {
-    internal static class PacketConverter
+    public static class PacketConverter
     {
         private static List<(FieldInfo field, byte id)> GetField(Type t)
             => t.GetFields(BindingFlags.Instance |
@@ -14,11 +14,11 @@ namespace Protocol.Protocol
 
         public static Packet Serialize(PacketType packetType, object obj, bool strict = false)
         {
-            (var type, var subType) = PacketTypeManager.GetType(packetType);
-            return Serialize(type, subType, obj, strict);
+            var type = PacketTypeManager.GetType(packetType);
+            return Serialize(type, obj, strict);
         }
 
-        public static Packet Serialize(byte type, byte subType, object obj, bool strict = false)
+        public static Packet Serialize(byte type, object obj, bool strict = false)
         {
             var fields = GetField(obj.GetType());
 
@@ -35,7 +35,7 @@ namespace Protocol.Protocol
                 }
             }
 
-            var packet = Packet.Create(type, subType);
+            var packet = Packet.Create(type);
 
             foreach (var (field, id) in fields)
                 packet.SetValue(id, field.GetValue(obj)!);
