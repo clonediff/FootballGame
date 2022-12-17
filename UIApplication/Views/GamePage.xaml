@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:model="clr-namespace:UIApplication.Models"
              x:Class="UIApplication.Views.GamePage"
              Title="GamePage"
-             BackgroundImageSource="pitch.jpg">
+             BackgroundColor="Green">
 
     <Grid
         ColumnDefinitions="*,*">
+
+        <Image
+            Source="pitch.jpg"
+            Grid.ColumnSpan="2">
+        </Image>
 
         <HorizontalStackLayout
             Grid.ColumnSpan="2"
@@ -25,8 +29,7 @@
             <Border Style="{StaticResource ScoreBorder}">
                 <Label
                     x:Name="timer"
-                    Style="{StaticResource ScoreLabel}"
-                    Text="09:00">
+                    Style="{StaticResource ScoreLabel}">
                 </Label>
             </Border>
 
@@ -41,132 +44,193 @@
         <Image
             x:Name="imgTeamA"
             Source="{Binding TeamAImageSource}"
-            WidthRequest="100"
-            HeightRequest="100"
+            WidthRequest="70"
+            HeightRequest="70"
             Grid.Column="0">
         </Image>
 
         <Image
             x:Name="imgTeamB"
             Source="{Binding TeamBImageSource}"
-            WidthRequest="100"
-            HeightRequest="100"
+            WidthRequest="70"
+            HeightRequest="70"
             Grid.Column="1">
         </Image>
 
         <Image
-            x:Name="img_ball"
+            x:Name="imgBall"
             Source="ball.jpg"
-            WidthRequest="60"
-            HeightRequest="60"
+            WidthRequest="30"
+            HeightRequest="30"
             HorizontalOptions="Center"
             Grid.ColumnSpan="2">
         </Image>
 
-        <Grid
-            RowDefinitions="48,48,48"
-            ColumnDefinitions="48,48,48"
+        <VerticalStackLayout
+            Spacing="10"
             VerticalOptions="End"
             Grid.Column="0">
 
-            <ImageButton
-                x:Name="ibUpTeamA"
-                Source="btn_up.jpg"
-                Grid.Column="1"
-                Grid.Row="0"
-                IsEnabled="True"
-                MaximumHeightRequest="48"
-                CornerRadius="10"
-                Pressed="OnUpClickedTeamA">
-            </ImageButton>
+            <Grid
+                ColumnDefinitions="72,72">
 
-            <ImageButton
-                x:Name="ibDownTeamA"
-                Source="btn_down.jpg"
-                Grid.Column="1"
-                Grid.Row="2"
-                IsEnabled="True"
-                MaximumHeightRequest="48"
-                CornerRadius="10"
-                Pressed="OnDownClickedTeamA">
-            </ImageButton>
+                <ImageButton
+                    x:Name="ibRotateRightBallTeamA"
+                    Source="rotate_right.jpg"
+                    Grid.Column="0"
+                    IsEnabled="True"
+                    MaximumHeightRequest="72"
+                    CornerRadius="10"
+                    Pressed="OnRightRotate">
+                </ImageButton>
 
-            <ImageButton
-                x:Name="ibLeftTeamA"
-                Source="btn_left.jpg"
-                Grid.Column="0"
-                Grid.Row="1"
-                IsEnabled="True"
-                MaximumHeightRequest="48"
-                CornerRadius="10"
-                Pressed="OnLeftClickedTeamA">
-            </ImageButton>
+                <ImageButton
+                    x:Name="ibRotateLeftBallTeamA"
+                    Source="rotate_left.jpg"
+                    Grid.Column="1"
+                    IsEnabled="True"
+                    MaximumHeightRequest="72"
+                    CornerRadius="10"
+                    Pressed="OnLeftRotate">
+                </ImageButton>
 
-            <ImageButton
-                x:Name="ibRightTeamA"
-                Source="btn_right.jpg"
-                Grid.Column="2"
-                Grid.Row="1"
-                IsEnabled="True"
-                MaximumHeightRequest="48"
-                CornerRadius="10"
-                Pressed="OnRightClickedTeamA">
-            </ImageButton>
+            </Grid>
 
-        </Grid>
+            <Grid
+                RowDefinitions="48,48,48"
+                ColumnDefinitions="48,48,48">
 
-        <Grid
-            RowDefinitions="48,48,48"
-            ColumnDefinitions="48,48,48"
-            HorizontalOptions="End"
+                <ImageButton
+                    x:Name="ibUpTeamA"
+                    Source="btn_up.jpg"
+                    Grid.Column="1"
+                    Grid.Row="0"
+                    IsEnabled="True"
+                    MaximumHeightRequest="48"
+                    CornerRadius="10"
+                    Pressed="OnUpClickedTeam">
+                </ImageButton>
+
+                <ImageButton
+                    x:Name="ibDownTeamA"
+                    Source="btn_down.jpg"
+                    Grid.Column="1"
+                    Grid.Row="2"
+                    IsEnabled="True"
+                    MaximumHeightRequest="48"
+                    CornerRadius="10"
+                    Pressed="OnDownClickedTeam">
+                </ImageButton>
+
+                <ImageButton
+                    x:Name="ibLeftTeamA"
+                    Source="btn_left.jpg"
+                    Grid.Column="0"
+                    Grid.Row="1"
+                    IsEnabled="True"
+                    MaximumHeightRequest="48"
+                    CornerRadius="10"
+                    Pressed="OnLeftClickedTeam">
+                </ImageButton>
+
+                <ImageButton
+                    x:Name="ibRightTeamA"
+                    Source="btn_right.jpg"
+                    Grid.Column="2"
+                    Grid.Row="1"
+                    IsEnabled="True"
+                    MaximumHeightRequest="48"
+                    CornerRadius="10"
+                    Pressed="OnRightClickedTeam">
+                </ImageButton>
+
+            </Grid>
+
+        </VerticalStackLayout>
+
+        <VerticalStackLayout
+            Spacing="10"
             VerticalOptions="End"
             Grid.Column="1">
 
-            <ImageButton
-                x:Name="ibUpTeamB"
-                Source="btn_up.jpg"
-                Grid.Column="1"
-                Grid.Row="0"
-                IsEnabled="True"
-                MaximumHeightRequest="48"
-                CornerRadius="10"
-                Pressed="OnUpClickedTeamB">
-            </ImageButton>
+            <Grid
+                ColumnDefinitions="72,72"
+                HorizontalOptions="End">
 
-            <ImageButton
-                x:Name="ibDownTeamB"
-                Source="btn_down.jpg"
-                Grid.Column="1"
-                Grid.Row="2"
-                IsEnabled="True"
-                MaximumHeightRequest="48"
-                CornerRadius="10"
-                Pressed="OnDownClickedTeamB">
-            </ImageButton>
+                <ImageButton
+                    x:Name="ibRotateRightBallTeamB"
+                    Source="rotate_right.jpg"
+                    Grid.Column="0"
+                    IsEnabled="True"
+                    MaximumHeightRequest="72"
+                    CornerRadius="10"
+                    Pressed="OnRightRotate">
+                </ImageButton>
 
-            <ImageButton
-                x:Name="ibLeftTeamB"
-                Source="btn_left.jpg"
-                Grid.Column="0"
-                Grid.Row="1"
-                IsEnabled="True"
-                MaximumHeightRequest="48"
-                CornerRadius="10"
-                Pressed="OnLeftClickedTeamB">
-            </ImageButton>
+                <ImageButton
+                    x:Name="ibRotateLeftBallTeamB"
+                    Source="rotate_left.jpg"
+                    Grid.Column="1"
+                    IsEnabled="True"
+                    MaximumHeightRequest="72"
+                    CornerRadius="10"
+                    Pressed="OnLeftRotate">
+                </ImageButton>
 
-            <ImageButton
-                x:Name="ibRightTeamB"
-                Source="btn_right.jpg"
-                Grid.Column="2"
-                Grid.Row="1"
-                IsEnabled="True"
-                MaximumHeightRequest="48"
-                CornerRadius="10"
-                Pressed="OnRightClickedTeamB">
-            </ImageButton>
+            </Grid>
 
-        </Grid>
+            <Grid
+                RowDefinitions="48,48,48"
+                ColumnDefinitions="48,48,48"
+                HorizontalOptions="End">
+
+                <ImageButton
+                    x:Name="ibUpTeamB"
+                    Source="btn_up.jpg"
+                    Grid.Column="1"
+                    Grid.Row="0"
+                    IsEnabled="True"
+                    MaximumHeightRequest="48"
+                    CornerRadius="10"
+                    Pressed="OnUpClickedTeam">
+                </ImageButton>
+
+                <ImageButton
+                    x:Name="ibDownTeamB"
+                    Source="btn_down.jpg"
+                    Grid.Column="1"
+                    Grid.Row="2"
+                    IsEnabled="True"
+                    MaximumHeightRequest="48"
+                    CornerRadius="10"
+                    Pressed="OnDownClickedTeam">
+                </ImageButton>
+
+                <ImageButton
+                    x:Name="ibLeftTeamB"
+                    Source="btn_left.jpg"
+                    Grid.Column="0"
+                    Grid.Row="1"
+                    IsEnabled="True"
+                    MaximumHeightRequest="48"
+                    CornerRadius="10"
+                    Pressed="OnLeftClickedTeam">
+                </ImageButton>
+
+                <ImageButton
+                    x:Name="ibRightTeamB"
+                    Source="btn_right.jpg"
+                    Grid.Column="2"
+                    Grid.Row="1"
+                    IsEnabled="True"
+                    MaximumHeightRequest="48"
+                    CornerRadius="10"
+                    Pressed="OnRightClickedTeam">
+                </ImageButton>
+
+            </Grid>
+
+        </VerticalStackLayout>
 
     </Grid>
 
