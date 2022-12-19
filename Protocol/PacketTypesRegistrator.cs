@@ -1,4 +1,5 @@
-﻿using Protocol.Protocol;
+﻿using Protocol.Packets;
+using Protocol.Protocol;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,8 +12,8 @@ namespace Protocol
     {
         public static void RegisterTypes()
         {
-            PacketTypeManager.RegisterType(PacketType.Handshake, 0);
-            PacketTypeManager.RegisterType(PacketType.TestPacket, 1);
+            PacketTypeManager.RegisterType(PacketType.Connect,      1);
+            PacketTypeManager.RegisterType(PacketType.CantConnect,  2);
         }
     }
 }

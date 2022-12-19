@@ -20,20 +20,27 @@ namespace Protocol
 
             MagicHandShake = rnd.Next();
 
-            var handshakePacket = PacketConverter.Serialize(
-                PacketType.Handshake,
-                new HandshakePacket
-                {
-                    MagicHandshakeNumber = MagicHandShake
-                });
+            //var handshakePacket = PacketConverter.Serialize(
+            //    PacketType.Handshake,
+            //    new HandshakePacket
+            //    {
+            //        MagicHandshakeNumber = MagicHandShake
+            //    });
 
-            var testPacket = PacketConverter.Serialize(
-                PacketType.TestPacket,
-                new TestPacket
+            //var testPacket = PacketConverter.Serialize(
+            //    PacketType.TestPacket,
+            //    new TestPacket
+            //    {
+            //        TestNumber = 54,
+            //        TestDouble = 4.56,
+            //        TestBoolean = true
+            //    });
+
+            var connect = PacketConverter.Serialize(PacketType.Connect,
+                new ConnectPlayer
                 {
-                    TestNumber = 54,
-                    TestDouble = 4.56,
-                    TestBoolean = true
+                    Id = Guid.NewGuid().ToString(),
+                    Team = "JAP"
                 });
 
             using (var client = new TcpClient())
@@ -44,7 +51,7 @@ namespace Protocol
                 var stream = client.GetStream();
                 if (stream is null) return;
 
-                await stream.WritePacketAsync(handshakePacket);
+                await stream.WritePacketAsync(connect);
 
                 var recievedPacket = await stream.ReadPacketAsync();
                 ProcessIncomingPacket(recievedPacket);
@@ -60,7 +67,7 @@ namespace Protocol
 
             switch (type)
             {
-                case PacketType.Handshake:
+                case PacketType.Connect:
                     ProcessHandshake(packet);
                     break;
             }
@@ -68,9 +75,8 @@ namespace Protocol
 
         private static void ProcessHandshake(Packet packet)
         {
-            var handshake = PacketConverter.Deserialize<HandshakePacket>(packet);
-            if (MagicHandShake - handshake.MagicHandshakeNumber == 15)
-                Console.WriteLine("Handshake successful!");
+            var connect = PacketConverter.Deserialize<ConnectPlayer>(packet);
+            Console.WriteLine(connect.Id + " " + connect.Team);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Protocol;
+﻿using FootballLogicLib;
+using Protocol;
 using Protocol.Packets;
 using Protocol.Protocol;
 using System;
@@ -10,9 +11,12 @@ using System.Threading.Tasks;
 
 namespace Server
 {
+    public delegate Task ProccesPacket(Packet packet);
+
     internal class ClientObject
     {
         protected internal string Id { get; } = Guid.NewGuid().ToString();
+        protected internal Player Player { get; private set; }
 
         protected internal NetworkStream Stream { get; }
         protected internal StreamReader Reader { get; }
@@ -20,6 +24,8 @@ namespace Server
 
         TcpClient client;
         ServerObject server; // объект сервера
+
+        internal Dictionary<PacketType, ProccesPacket> ProccesPackets { get; }
 
         public ClientObject(TcpClient tcpClient, ServerObject serverObject)
         {
@@ -30,6 +36,11 @@ namespace Server
 
             Reader = new StreamReader(Stream);
             Writer = new StreamWriter(Stream);
+
+            ProccesPackets = new()
+            {
+                [PacketType.Connect] = ProccessPlayerConnect
+            };
         }
 
         public async Task ProcessAsync()
@@ -44,37 +55,11 @@ namespace Server
                         await ProccessIncomingPacketAsync(t);
                     } catch
                     {
+                        // покинуть
+                        Console.WriteLine("Пока");
                         break;
                     }
                 }
-                //await server.BroadcastMessageAsync(t, Id);
-
-                // получаем имя пользователя
-                //string? userName = await Reader.ReadLineAsync();
-                //string? message = $"{userName} вошел в чат";
-                //// посылаем сообщение о входе в чат всем подключенным пользователям
-                //await server.BroadcastMessageAsync(message, Id);
-                //Console.WriteLine(message);
-                //// в бесконечном цикле получаем сообщения от клиента
-                //string? message = "";
-                //while (true)
-                //{
-                //    try
-                //    {
-                //        message = await Reader.ReadLineAsync();
-                //        if (message == null) continue;
-                //        message = $": {message}";
-                //        Console.WriteLine(message);
-                //        await server.BroadcastMessageAsync(message, Id);
-                //    }
-                //    catch
-                //    {
-                //        message = $"покинул чат";
-                //        Console.WriteLine(message);
-                //        await server.BroadcastMessageAsync(message, Id);
-                //        break;
-                //    }
-                //}
             }
             catch (Exception e)
             {
@@ -90,33 +75,19 @@ namespace Server
         {
             var type = PacketTypeManager.GetTypeFromPacket(packet);
 
-            switch (type)
+            if (ProccesPackets.TryGetValue(type, out var proccess))
+                await proccess(packet);
+            else
             {
-                case PacketType.Handshake:
-                    await ProccessHandshakeAsync(packet);
-                    break;
-                case PacketType.TestPacket:
-                    ProccessTestPacket(packet);
-                    break;
+                // Unknown Packet
             }
         }
 
-        private void ProccessTestPacket(Packet packet)
+        private async Task ProccessPlayerConnect(Packet packet)
         {
-            var testPacket = PacketConverter.Deserialize<TestPacket>(packet);
-            Console.WriteLine(testPacket);
-        }
-
-        private async Task ProccessHandshakeAsync(Packet packet)
-        {
-            Console.WriteLine("Handshake recieved!");
-
-            var handshake = PacketConverter.Deserialize<HandshakePacket>(packet);
-            handshake.MagicHandshakeNumber -= 15;
-
-            Console.WriteLine("Answering...");
-            var newPacket = PacketConverter.Serialize(PacketType.Handshake, handshake);
-            await Stream.WritePacketAsync(newPacket);
+            var connect = PacketConverter.Deserialize<ConnectPlayer>(packet);
+            Player = new Player { Id = Id, TeamName = connect.Team };
+            server.SendPlayersList(Id);
         }
 
         // закрытие подключения

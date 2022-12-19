@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -44,7 +45,7 @@ namespace Protocol.Protocol
 
         public static Packet Parse(byte[] packet)
         {
-            if (packet.Length < 7)
+            if (packet.Length < 6)
                 return null;
 
             if (packet[0] != 0xAF ||
@@ -90,14 +91,21 @@ namespace Protocol.Protocol
             var rawSize = Marshal.SizeOf(value);
             var rawData = new byte[rawSize];
 
-            var handle = GCHandle.Alloc(rawData,
-                GCHandleType.Pinned);
+            //var handle = GCHandle.Alloc(rawData,
+            //    GCHandleType.Pinned);
 
-            Marshal.StructureToPtr(value,
-                handle.AddrOfPinnedObject(),
-                false);
+            //Marshal.StructureToPtr(value,
+            //    handle.AddrOfPinnedObject(),
+            //    false);
 
-            handle.Free();
+            //handle.Free();
+
+            var ptr = Marshal.AllocHGlobal(rawSize);
+
+            Marshal.StructureToPtr(value, ptr, false);
+            Marshal.Copy(ptr, rawData, 0, rawSize);
+
+            Marshal.FreeHGlobal(ptr);
 
             return rawData;
         }
@@ -107,15 +115,17 @@ namespace Protocol.Protocol
         {
             T structure;
 
-            var handle = GCHandle.Alloc(bytes, GCHandleType.Pinned);
+            //var handle = GCHandle.Alloc(bytes, GCHandleType.Pinned);
+            var ptr = Marshal.AllocHGlobal(bytes.Length);
 
             try
             {
-                structure = Marshal.PtrToStructure<T>(handle.AddrOfPinnedObject());
+                structure = Marshal.PtrToStructure<T>(ptr);
             }
             finally
             {
-                handle.Free();
+                // handle.Free();
+                Marshal.FreeHGlobal(ptr);
             }
 
             return structure;

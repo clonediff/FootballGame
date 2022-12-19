@@ -77,7 +77,7 @@
                     </Picker.Items>
                 </Picker>
 
-                <Picker 
+                <!--<Picker 
                     x:Name="OpponentPck"
                     Title="Select opponent team">
                     <Picker.Items>
@@ -114,7 +114,7 @@
                         <x:String>USA</x:String>
                         <x:String>WAL</x:String>
                     </Picker.Items>
-                </Picker>
+                </Picker>-->
             </HorizontalStackLayout>
 
             <Label

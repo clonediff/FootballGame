@@ -9,7 +9,8 @@ namespace Protocol.Protocol
     public enum PacketType : byte
     {
         Unknown,
-        Handshake,
-        TestPacket
+        Connect,
+        CantConnect,
+        PlayersList
     }
 }

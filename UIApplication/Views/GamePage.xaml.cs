@@ -1,4 +1,5 @@
-using UIApplication.Models;
+using FootballLogicLib;
+using UIApplication.Connection;
 
 namespace UIApplication.Views;
 
@@ -27,10 +28,33 @@ public partial class GamePage : ContentPage
 
         _timer.Start();
 
-        game.TeamAImageSource = $"{game.TeamA.ToLower()}.jpg";
-        game.TeamBImageSource = $"{game.TeamB.ToLower()}.jpg";
+        //game.TeamAImageSource = $"{game.TeamA.ToLower()}.jpg";
+        //game.TeamBImageSource = $"{game.TeamB.ToLower()}.jpg";
 
         BindingContext = game;
+
+        Task.Run(ConnectionManager.ConnectAndRunAsync);
+
+        ConnectionManager.OnCantConnect += OnCantConnect;
+    }
+
+    public void OnCantConnect()
+    {
+        Dispatcher.Dispatch(async () =>
+        {
+            await DisplayAlert("Не удалось подключиться", "AAAAAAAAAAAAA", "Пока");
+            await Shell.Current.Navigation.PopAsync();
+        });
+        
+    }
+
+    protected override void OnDisappearing()
+    {
+        ConnectionManager.Disconnect();
+        ConnectionManager.OnCantConnect -= OnCantConnect;
+
+        if (_timer.IsRunning)
+            _timer.Stop();
     }
 
     private void OnUpClickedTeamA(object sender, EventArgs e) => imgTeamA.TranslationY -= 10;

@@ -62,10 +62,12 @@ namespace Protocol.Protocol
                     continue;
                 }
 
-                // packet.GetValue<field.FieldType>(id)
-                var value = typeof(Packet)
+                var method = typeof(Packet)
                     .GetMethod("GetValue")?
-                    .MakeGenericMethod(field.FieldType)
+                    .MakeGenericMethod(field.FieldType);
+                
+                // packet.GetValue<field.FieldType>(id)
+                var value = method
                     .Invoke(packet, new object[] { id });
 
                 if (value is null)

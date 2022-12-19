@@ -5,9 +5,11 @@ VisualStudioVersion = 17.0.31611.283
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UIApplication", "UIApplication\UIApplication.csproj", "{EB03C813-F5F8-4C5F-AA4D-9A06673C6913}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{15CAD5C8-C606-40BE-9F43-DD8279C6CBC0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server", "Server\Server.csproj", "{15CAD5C8-C606-40BE-9F43-DD8279C6CBC0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Protocol", "Protocol\Protocol.csproj", "{20536FBE-68B2-40B3-8CF5-DEEADA8347CA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Protocol", "Protocol\Protocol.csproj", "{20536FBE-68B2-40B3-8CF5-DEEADA8347CA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FootballLogicLib", "FootballLogicLib\FootballLogicLib.csproj", "{297C09E4-992D-4C7D-9D48-B9073FF55830}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,6 +31,10 @@ Global
 		{20536FBE-68B2-40B3-8CF5-DEEADA8347CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20536FBE-68B2-40B3-8CF5-DEEADA8347CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{20536FBE-68B2-40B3-8CF5-DEEADA8347CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{297C09E4-992D-4C7D-9D48-B9073FF55830}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{297C09E4-992D-4C7D-9D48-B9073FF55830}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{297C09E4-992D-4C7D-9D48-B9073FF55830}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{297C09E4-992D-4C7D-9D48-B9073FF55830}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
