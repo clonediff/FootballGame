@@ -1,6 +1,5 @@
 using FootballLogicLib;
 using UIApplication.Connection;
-using UIApplication.Models;
 using Point = Microsoft.Maui.Graphics.Point;
 
 namespace UIApplication.Views;
