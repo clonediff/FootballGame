@@ -13,34 +13,6 @@
             Grid.ColumnSpan="2">
         </Image>
 
-        <HorizontalStackLayout
-            Grid.ColumnSpan="2"
-            HorizontalOptions="Center"
-            VerticalOptions="Start"
-            HeightRequest="50"
-            Spacing="10">
-            <Border Style="{StaticResource ScoreBorder}">
-                <Label
-                    Style="{StaticResource ScoreLabel}"
-                    Text="{Binding TeamA}">
-                </Label>
-            </Border>
-
-            <Border Style="{StaticResource ScoreBorder}">
-                <Label
-                    x:Name="timer"
-                    Style="{StaticResource ScoreLabel}">
-                </Label>
-            </Border>
-
-            <Border Style="{StaticResource ScoreBorder}">
-                <Label
-                    Style="{StaticResource ScoreLabel}"
-                    Text="{Binding TeamB}">
-                </Label>
-            </Border>
-        </HorizontalStackLayout>
-
         <Image
             x:Name="imgTeamA"
             Source="{Binding TeamAImageSource}"
@@ -66,92 +38,40 @@
             Grid.ColumnSpan="2">
         </Image>
 
-        <VerticalStackLayout
-            Spacing="10"
-            VerticalOptions="End"
-            Grid.Column="0">
+        <Image
+            x:Name="imgGoalLeft"
+            Source="goal_left.jpg"
+            WidthRequest="55"
+            HorizontalOptions="Start"
+            Grid.Column="0"
+            Margin="175,0,0,0">
+        </Image>
 
-            <Grid
-                ColumnDefinitions="72,72">
-
-                <ImageButton
-                    x:Name="ibRotateRightBallTeamA"
-                    Source="rotate_right.jpg"
-                    Grid.Column="0"
-                    IsEnabled="True"
-                    MaximumHeightRequest="72"
-                    CornerRadius="10"
-                    Pressed="OnRightRotate">
-                </ImageButton>
-
-                <ImageButton
-                    x:Name="ibRotateLeftBallTeamA"
-                    Source="rotate_left.jpg"
-                    Grid.Column="1"
-                    IsEnabled="True"
-                    MaximumHeightRequest="72"
-                    CornerRadius="10"
-                    Pressed="OnLeftRotate">
-                </ImageButton>
-
-            </Grid>
-
-            <Grid
-                RowDefinitions="48,48,48"
-                ColumnDefinitions="48,48,48">
-
-                <ImageButton
-                    x:Name="ibUpTeamA"
-                    Source="btn_up.jpg"
-                    Grid.Column="1"
-                    Grid.Row="0"
-                    IsEnabled="True"
-                    MaximumHeightRequest="48"
-                    CornerRadius="10"
-                    Pressed="OnUpClickedTeam">
-                </ImageButton>
-
-                <ImageButton
-                    x:Name="ibDownTeamA"
-                    Source="btn_down.jpg"
-                    Grid.Column="1"
-                    Grid.Row="2"
-                    IsEnabled="True"
-                    MaximumHeightRequest="48"
-                    CornerRadius="10"
-                    Pressed="OnDownClickedTeam">
-                </ImageButton>
-
-                <ImageButton
-                    x:Name="ibLeftTeamA"
-                    Source="btn_left.jpg"
-                    Grid.Column="0"
-                    Grid.Row="1"
-                    IsEnabled="True"
-                    MaximumHeightRequest="48"
-                    CornerRadius="10"
-                    Pressed="OnLeftClickedTeam">
-                </ImageButton>
-
-                <ImageButton
-                    x:Name="ibRightTeamA"
-                    Source="btn_right.jpg"
-                    Grid.Column="2"
-                    Grid.Row="1"
-                    IsEnabled="True"
-                    MaximumHeightRequest="48"
-                    CornerRadius="10"
-                    Pressed="OnRightClickedTeam">
-                </ImageButton>
-
-            </Grid>
-
-        </VerticalStackLayout>
+        <Image
+            x:Name="imgGoalRight"
+            Source="goal_right.jpg"
+            WidthRequest="55"
+            HorizontalOptions="End"
+            Grid.Column="1"
+            Margin="0,0,177,0">
+        </Image>
 
         <VerticalStackLayout
             Spacing="10"
             VerticalOptions="End"
             Grid.Column="1">
+
+            <Button
+                x:Name="btnShotTeamB"
+                Text="Удар"
+                WidthRequest="100"
+                HeightRequest="50"
+                HorizontalOptions="End"
+                BackgroundColor="#5C7CFA"
+                BorderColor="White"
+                BorderWidth="3"
+                Pressed="OnShotPressed">
+            </Button>
 
             <Grid
                 ColumnDefinitions="72,72"
@@ -231,6 +151,57 @@
             </Grid>
 
         </VerticalStackLayout>
+
+        <HorizontalStackLayout
+            HorizontalOptions="Center"
+            VerticalOptions="Start"
+            HeightRequest="30"
+            Grid.ColumnSpan="2"
+            Spacing="10">
+            <Border 
+                Style="{StaticResource ScoreBorder}"
+                Margin="0,0,450,0">
+                <Label
+                    x:Name="timer"
+                    Style="{StaticResource ScoreLabel}">
+                </Label>
+            </Border>
+
+            <Border Style="{StaticResource ScoreBorder}">
+                <Label
+                    Style="{StaticResource ScoreLabel}"
+                    Text="{Binding TeamA}">
+                </Label>
+            </Border>
+
+            <Border Style="{StaticResource ScoreBorder}">
+                <HorizontalStackLayout
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center">
+                    <Label
+                        Style="{StaticResource ScoreLabel}"
+                        x:Name="scoreTeamA"
+                        Text="0">
+                    </Label>
+                    <Label
+                        Style="{StaticResource ScoreLabel}"
+                        Text=":">
+                    </Label>
+                    <Label
+                        Style="{StaticResource ScoreLabel}"
+                        x:Name="scoreTeamB"
+                        Text="0">
+                    </Label>
+                </HorizontalStackLayout>
+            </Border>
+
+            <Border Style="{StaticResource ScoreBorder}">
+                <Label
+                    Style="{StaticResource ScoreLabel}"
+                    Text="{Binding TeamB}">
+                </Label>
+            </Border>
+        </HorizontalStackLayout>
 
     </Grid>
 
