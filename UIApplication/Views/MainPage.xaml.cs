@@ -12,16 +12,16 @@ public partial class MainPage : ContentPage
 
     private async void OnStartClicked(object sender, EventArgs e)
     {
-		if (YourPck.SelectedItem is null/* || OpponentPck.SelectedItem is null*/)
+		if (YourPck.SelectedItem is null || OpponentPck.SelectedItem is null)
 			ErrorLbl.IsVisible = true;
 		else
         {
-			await Navigation.PushAsync(new LobbyPage(YourPck.SelectedItem.ToString()));
-            //await Navigation.PushAsync(new GamePage(new Game
-            //{
-            //    TeamA = YourPck.SelectedItem.ToString(),
-            //    TeamB = OpponentPck.SelectedItem.ToString()
-            //}));
+            // await Navigation.PushAsync(new LobbyPage(YourPck.SelectedItem.ToString()));
+            await Navigation.PushAsync(new GamePage(new Game
+            {
+                TeamA = YourPck.SelectedItem.ToString(),
+                TeamB = OpponentPck.SelectedItem.ToString()
+            }));
         }
     }
 }
