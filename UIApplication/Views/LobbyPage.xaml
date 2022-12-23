@@ -6,7 +6,8 @@
     <VerticalStackLayout>
         <Button x:Name="ReadyBtn"
                 Text="Ready"
-                WidthRequest="100" />
+                WidthRequest="100" 
+                Clicked="ChangeReadyState"/>
 
         <VerticalStackLayout x:Name="Players">
         

@@ -39,7 +39,8 @@ namespace Server
 
             ProccesPackets = new()
             {
-                [PacketType.Connect] = ProccessPlayerConnect
+                [PacketType.Connect] = ProccessPlayerConnect,
+                [PacketType.ReadyState] = ProccessReadyStateChange
             };
         }
 
@@ -56,7 +57,10 @@ namespace Server
                     } catch
                     {
                         // покинуть
-                        Console.WriteLine("Пока");
+                        Console.WriteLine($"Игрок {Id} покинул игру");
+                        await server.BroadcastPacketAsync(PacketConverter.Serialize(
+                            PacketType.Disconnect,
+                            new DisconnectPlayer { Id = Id }));
                         break;
                     }
                 }
@@ -83,11 +87,24 @@ namespace Server
             }
         }
 
+        private async Task ProccessReadyStateChange(Packet packet)
+        {
+            var playerState = PacketConverter.Deserialize<PlayerReadyState>(packet);
+            playerState.Id = Id;
+            await server.BroadcastPacketAsync(
+                PacketConverter.Serialize(PacketType.ReadyState, playerState));
+            Console.WriteLine($"Игрое {Id} {(playerState.IsReady ? "" : "не")} готов к игре");
+        }
+        
         private async Task ProccessPlayerConnect(Packet packet)
         {
             var connect = PacketConverter.Deserialize<ConnectPlayer>(packet);
             Player = new Player { Id = Id, TeamName = connect.Team };
-            server.SendPlayersList(Id);
+            await server.SendPlayersList(Id);
+            connect.Id = Id;
+            await server.BroadcastPacketAsync(
+                PacketConverter.Serialize(PacketType.Connect, connect));
+            Console.WriteLine($"Игрок {Id} присоединился за команду {connect.Team}");
         }
 
         // закрытие подключения

@@ -15,45 +15,31 @@ namespace UIApplication.Connection
     public static class ConnectionManager
     {
         public const string HOST = "127.0.0.1";
-        public static string Team { get; set; }
 
-        public static TcpClient Client { get; private set; }
+        private static TcpClient Client { get; set; } = new();
 
-        public static NetworkStream Stream { get; private set; }
+        private static NetworkStream Stream { get; set; }
 
-        public static event Action OnCantConnect;
+        public static event Action<string> OnCantConnect;
         public static event Action<Player> OnConnect;
         public static event Action<Player[]> OnPlayersList;
+        public static event Action<string> OnPlayerDisconnect;
+        public static event Action<string, bool> OnReadyStateChanged;
 
-        static ConnectionManager()
+        public static async Task ConnectAndRunAsync(string team)
         {
-            PacketTypesRegistrator.RegisterTypes();
-        }
-
-        public static async Task ConnectAndRunAsync()
-        {
-            if (Client?.Client is null)
-                Client = new();
             Client.Connect(HOST, 8888);
             Stream = Client.GetStream();
             // запускаем ввод сообщений
-            Task.Run(() => ReceiveMessageAsync());
-            await SendConnectMessageAsync();
+            Task.Run(ReceiveMessageAsync);
+
+            var connect = new ConnectPlayer { Team = team };
+            await SendPacketAsync(PacketType.Connect, connect);
         }
 
-        private static async Task SendConnectMessageAsync()
+        public static async Task SendPacketAsync(PacketType type, object packet)
         {
-            var connect = new ConnectPlayer
-            {
-                Team = Team
-            };
-            await Stream.WritePacketAsync(
-                PacketConverter.Serialize(PacketType.Connect, connect));
-
-            while (true)
-            {
-
-            }
+            await Stream.WritePacketAsync(PacketConverter.Serialize(type, packet));
         }
 
         private static async Task ReceiveMessageAsync()
@@ -78,7 +64,8 @@ namespace UIApplication.Connection
             switch (packetType)
             {
                 case PacketType.CantConnect:
-                    OnCantConnect();
+                    var cantConnect = PacketConverter.Deserialize<CantConnect>(packet);
+                    OnCantConnect(cantConnect.Id);
                     break;
                 case PacketType.Connect:
                     var connect = PacketConverter.Deserialize<ConnectPlayer>(packet);
@@ -88,6 +75,14 @@ namespace UIApplication.Connection
                     var players = PacketConverter.Deserialize<PlayersList>(packet);
                     OnPlayersList(players.Players);
                     break;
+                case PacketType.Disconnect:
+                    var disconnected = PacketConverter.Deserialize<DisconnectPlayer>(packet);
+                    OnPlayerDisconnect(disconnected.Id);
+                    break;
+                case PacketType.ReadyState:
+                    var state = PacketConverter.Deserialize<PlayerReadyState>(packet);
+                    OnReadyStateChanged(state.Id, state.IsReady);
+                    break;
             }
         }
 
@@ -95,6 +90,7 @@ namespace UIApplication.Connection
         {
             Stream?.Close();
             Client.Dispose();
+            Client = new();
         }
     }
 }

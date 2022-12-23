@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace Protocol.Packets
 {
-    public class ConnectPlayer
+    public class PlayerReadyState
     {
         [Field(0)]
         public string Id;
 
         [Field(1)]
-        public string Team;
+        public bool IsReady;
     }
 }

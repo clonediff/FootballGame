@@ -7,12 +7,9 @@ using System.Threading.Tasks;
 
 namespace Protocol.Packets
 {
-    public class ConnectPlayer
+    public class DisconnectPlayer
     {
         [Field(0)]
         public string Id;
-
-        [Field(1)]
-        public string Team;
     }
 }

@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Protocol.Protocol
@@ -88,47 +91,14 @@ namespace Protocol.Protocol
         }
         public byte[] FixedObjectToByteArray(object value)
         {
-            var rawSize = Marshal.SizeOf(value);
-            var rawData = new byte[rawSize];
-
-            //var handle = GCHandle.Alloc(rawData,
-            //    GCHandleType.Pinned);
-
-            //Marshal.StructureToPtr(value,
-            //    handle.AddrOfPinnedObject(),
-            //    false);
-
-            //handle.Free();
-
-            var ptr = Marshal.AllocHGlobal(rawSize);
-
-            Marshal.StructureToPtr(value, ptr, false);
-            Marshal.Copy(ptr, rawData, 0, rawSize);
-
-            Marshal.FreeHGlobal(ptr);
-
-            return rawData;
+            var json = JsonSerializer.Serialize(value);
+            return Encoding.UTF8.GetBytes(json);
         }
 
         private T ByteArrayToFixedObject<T>(byte[] bytes)
-            where T : struct
         {
-            T structure;
-
-            //var handle = GCHandle.Alloc(bytes, GCHandleType.Pinned);
-            var ptr = Marshal.AllocHGlobal(bytes.Length);
-
-            try
-            {
-                structure = Marshal.PtrToStructure<T>(ptr);
-            }
-            finally
-            {
-                // handle.Free();
-                Marshal.FreeHGlobal(ptr);
-            }
-
-            return structure;
+            var json = Encoding.UTF8.GetString(bytes);
+            return JsonSerializer.Deserialize<T>(json)!;
         }
 
         public PacketField GetField(byte id)
@@ -144,26 +114,17 @@ namespace Protocol.Protocol
             => GetField(id) is not null;
 
         public T GetValue<T>(byte id)
-            where T : struct
         {
             var field = GetField(id);
 
             if (field is null)
                 throw new Exception($"Field with ID {id} wasn't found.");
 
-            var neededSize = Marshal.SizeOf(typeof(T));
-
-            if (neededSize != field.FieldSize)
-                throw new Exception($"Can't convert field to type {typeof(T).FullName}.\n" + $"We have {field.FieldSize} bytes but we need exactly {neededSize}.");
-
             return ByteArrayToFixedObject<T>(field.Contents);
         }
 
         public void SetValue(byte id, object structure)
         {
-            if (!structure.GetType().IsValueType)
-                throw new Exception("Only value types are available.");
-
             var field = GetField(id);
 
             if (field == null)

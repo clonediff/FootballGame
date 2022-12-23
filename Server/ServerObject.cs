@@ -9,7 +9,6 @@ using FootballLogicLib;
 using Protocol.Protocol;
 using Protocol;
 using Protocol.Packets;
-//using UIApplication.Models;
 
 namespace Server
 {
@@ -38,12 +37,19 @@ namespace Server
                 {
                     TcpClient tcpClient = await tcpListener.AcceptTcpClientAsync();
                     ClientObject clientObject = new ClientObject(tcpClient, this);
+
+                    if (clients.Count >= 2)
+                    {
+                        var cantConnect = new CantConnect
+                        {
+                            Id = clientObject.Id
+                        };
+                        await clientObject.Stream.WritePacketAsync(
+                            PacketConverter.Serialize(PacketType.CantConnect, cantConnect));
+                        continue;
+                    }
+
                     clients.Add(clientObject.Id, clientObject);
-
-                    //var cantConnect = new CantConnecat();
-                    //await clientObject.Stream.WritePacketAsync(
-                    //    PacketConverter.Serialize(PacketType.CantConnect, cantConnect));
-
                     Task.Run(clientObject.ProcessAsync);
                 }
             }
@@ -58,7 +64,7 @@ namespace Server
         }
 
         // трансляция сообщения подключенным клиентам
-        protected internal async Task BroadcastPacketAsync(Packet packet, string id)
+        protected internal async Task BroadcastPacketAsync(Packet packet)
         {
             foreach (var (clientId, client) in clients)
             {

@@ -39,9 +39,9 @@ public partial class GamePage : ContentPage
 
         BindingContext = game;
 
-        Task.Run(ConnectionManager.ConnectAndRunAsync);
+        //Task.Run(ConnectionManager.ConnectAndRunAsync);
 
-        ConnectionManager.OnCantConnect += OnCantConnect;
+        //ConnectionManager.OnCantConnect += OnCantConnect;
     }
 
     public void OnCantConnect()
@@ -57,7 +57,7 @@ public partial class GamePage : ContentPage
     protected override void OnDisappearing()
     {
         ConnectionManager.Disconnect();
-        ConnectionManager.OnCantConnect -= OnCantConnect;
+        //ConnectionManager.OnCantConnect -= OnCantConnect;
 
         if (_timer.IsRunning)
             _timer.Stop();

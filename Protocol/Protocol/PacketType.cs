@@ -11,6 +11,8 @@ namespace Protocol.Protocol
         Unknown,
         Connect,
         CantConnect,
-        PlayersList
+        PlayersList,
+        Disconnect,
+        ReadyState
     }
 }

@@ -16,8 +16,6 @@ namespace Protocol
         {
             var rnd = new Random();
 
-            PacketTypesRegistrator.RegisterTypes();
-
             MagicHandShake = rnd.Next();
 
             //var handshakePacket = PacketConverter.Serialize(

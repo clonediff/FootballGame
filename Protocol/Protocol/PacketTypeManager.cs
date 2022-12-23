@@ -11,6 +11,15 @@ namespace Protocol.Protocol
     {
         static readonly Dictionary<PacketType, byte> TypeDictionary = new();
 
+        static PacketTypeManager()
+        {
+            PacketTypeManager.RegisterType(PacketType.Connect, 1);
+            PacketTypeManager.RegisterType(PacketType.CantConnect, 2);
+            PacketTypeManager.RegisterType(PacketType.PlayersList, 3);
+            PacketTypeManager.RegisterType(PacketType.Disconnect, 4);
+            PacketTypeManager.RegisterType(PacketType.ReadyState, 5);
+        }
+
         public static void RegisterType(PacketType type, byte btype)
         {
             if (TypeDictionary.ContainsKey(type))
