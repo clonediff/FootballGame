@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using UIApplication.ViewModels;
+using UIApplication.Views;
 
 namespace UIApplication;
 
@@ -19,6 +21,14 @@ public static class MauiProgram
 		builder.Logging.AddDebug();
 #endif
 
-		return builder.Build();
+        builder.Services.AddTransient<MainViewModel>();
+        builder.Services.AddTransient<LobbyViewModel>();
+        builder.Services.AddTransient<GameViewModel>();
+
+        builder.Services.AddTransient<MainPage>();
+        builder.Services.AddTransient<LobbyPage>();
+        builder.Services.AddTransient<GamePage>();
+
+        return builder.Build();
 	}
 }

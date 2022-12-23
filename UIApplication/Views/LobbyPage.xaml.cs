@@ -2,6 +2,7 @@ using FootballLogicLib;
 using Protocol.Packets;
 using Protocol.Protocol;
 using UIApplication.Connection;
+using UIApplication.ViewModels;
 
 namespace UIApplication.Views;
 
@@ -12,19 +13,25 @@ public partial class LobbyPage : ContentPage
 
 	private Dictionary<string, Label> labels = new();
 
-	public LobbyPage(string team)
+	public LobbyPage(LobbyViewModel viewModel)
 	{
 		InitializeComponent();
+        BindingContext = viewModel;
+    }
 
-		Task.Run(() => ConnectionManager.ConnectAndRunAsync(team));
+    protected override void OnNavigatedTo(NavigatedToEventArgs args)
+    {
+        base.OnNavigatedTo(args);
 
-		ConnectionManager.OnConnect += ProccessConnectAsync;
-		ConnectionManager.OnPlayersList += ProccessPlayersList;
-		ConnectionManager.OnCantConnect += ProccesCantConnect;
+        Task.Run(() => ConnectionManager.ConnectAndRunAsync((BindingContext as LobbyViewModel).Players[0].TeamName));
+
+        ConnectionManager.OnConnect += ProccessConnectAsync;
+        ConnectionManager.OnPlayersList += ProccessPlayersList;
+        ConnectionManager.OnCantConnect += ProccesCantConnect;
 
         ConnectionManager.OnPlayerDisconnect += ProccessPlayerDisconnect;
         ConnectionManager.OnReadyStateChanged += ProccessStateChanged;
-	}
+    }
 
     private void ProccessStateChanged(string id, bool ready)
     {
