@@ -6,7 +6,6 @@ namespace FootballLogicLib.Models
     {
         public string Id { get; set; }
         public string TeamName { get; set; }
-        public string ImageSource { get; set; }
         public Point Location { get; set; }
         public int Score { get; set; }
     }

@@ -24,7 +24,6 @@ namespace UIApplication.ViewModels
             {
                 Id = Guid.NewGuid().ToString(),
                 TeamName = team.ToString(),
-                ImageSource = $"{team.ToString().ToLower()}.jpg",
                 Location = Point.Empty,
                 Score = 0,
             };

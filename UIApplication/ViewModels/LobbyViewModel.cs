@@ -28,7 +28,6 @@ namespace UIApplication.ViewModels
             {
                 Id = Guid.NewGuid().ToString(),
                 TeamName = "AUS",
-                ImageSource = "aus.jpg",
                 Location = Point.Empty,
                 Score = 0
             };

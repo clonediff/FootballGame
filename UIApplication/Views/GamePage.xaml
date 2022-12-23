@@ -17,7 +17,6 @@
 
         <Image
             x:Name="imgTeamA"
-            Source="{Binding Game.FirstPlayer.ImageSource}"
             WidthRequest="70"
             HeightRequest="70"
             Grid.Column="0">
@@ -25,7 +24,6 @@
 
         <Image
             x:Name="imgTeamB"
-            Source="{Binding Game.SecondPlayer.ImageSource}"
             WidthRequest="70"
             HeightRequest="70"
             Grid.Column="1">
@@ -69,7 +67,8 @@
                 Margin="0,0,450,0">
                 <Label
                     x:Name="timer"
-                    Style="{StaticResource ScoreLabel}">
+                    Style="{StaticResource ScoreLabel}"
+                    Text="{Binding Game.Time}">
                 </Label>
             </Border>
 
