@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodel="clr-namespace:UIApplication.ViewModels"
              x:Class="UIApplication.Views.GamePage"
+             x:DataType="viewmodel:GameViewModel"
              Title="GamePage"
              BackgroundColor="Green">
 
@@ -15,7 +17,7 @@
 
         <Image
             x:Name="imgTeamA"
-            Source="{Binding TeamAImageSource}"
+            Source="{Binding Game.FirstPlayer.ImageSource}"
             WidthRequest="70"
             HeightRequest="70"
             Grid.Column="0">
@@ -23,7 +25,7 @@
 
         <Image
             x:Name="imgTeamB"
-            Source="{Binding TeamBImageSource}"
+            Source="{Binding Game.SecondPlayer.ImageSource}"
             WidthRequest="70"
             HeightRequest="70"
             Grid.Column="1">
@@ -56,102 +58,6 @@
             Margin="0,0,177,0">
         </Image>
 
-        <VerticalStackLayout
-            Spacing="10"
-            VerticalOptions="End"
-            Grid.Column="1">
-
-            <Button
-                x:Name="btnShotTeamB"
-                Text="Удар"
-                WidthRequest="100"
-                HeightRequest="50"
-                HorizontalOptions="End"
-                BackgroundColor="#5C7CFA"
-                BorderColor="White"
-                BorderWidth="3"
-                Pressed="OnShotPressed">
-            </Button>
-
-            <Grid
-                ColumnDefinitions="72,72"
-                HorizontalOptions="End">
-
-                <ImageButton
-                    x:Name="ibRotateRightBallTeamB"
-                    Source="rotate_right.jpg"
-                    Grid.Column="0"
-                    IsEnabled="True"
-                    MaximumHeightRequest="72"
-                    CornerRadius="10"
-                    Pressed="OnRightRotate">
-                </ImageButton>
-
-                <ImageButton
-                    x:Name="ibRotateLeftBallTeamB"
-                    Source="rotate_left.jpg"
-                    Grid.Column="1"
-                    IsEnabled="True"
-                    MaximumHeightRequest="72"
-                    CornerRadius="10"
-                    Pressed="OnLeftRotate">
-                </ImageButton>
-
-            </Grid>
-
-            <Grid
-                RowDefinitions="48,48,48"
-                ColumnDefinitions="48,48,48"
-                HorizontalOptions="End">
-
-                <ImageButton
-                    x:Name="ibUpTeamB"
-                    Source="btn_up.jpg"
-                    Grid.Column="1"
-                    Grid.Row="0"
-                    IsEnabled="True"
-                    MaximumHeightRequest="48"
-                    CornerRadius="10"
-                    Pressed="OnUpClickedTeam">
-                </ImageButton>
-
-                <ImageButton
-                    x:Name="ibDownTeamB"
-                    Source="btn_down.jpg"
-                    Grid.Column="1"
-                    Grid.Row="2"
-                    IsEnabled="True"
-                    MaximumHeightRequest="48"
-                    CornerRadius="10"
-                    Pressed="OnDownClickedTeam">
-                </ImageButton>
-
-                <ImageButton
-                    x:Name="ibLeftTeamB"
-                    Source="btn_left.jpg"
-                    Grid.Column="0"
-                    Grid.Row="1"
-                    IsEnabled="True"
-                    MaximumHeightRequest="48"
-                    CornerRadius="10"
-                    Pressed="OnLeftClickedTeam">
-                </ImageButton>
-
-                <ImageButton
-                    x:Name="ibRightTeamB"
-                    Source="btn_right.jpg"
-                    Grid.Column="2"
-                    Grid.Row="1"
-                    IsEnabled="True"
-                    MaximumHeightRequest="48"
-                    CornerRadius="10"
-                    Pressed="OnRightClickedTeam">
-                </ImageButton>
-
-            </Grid>
-
-        </VerticalStackLayout>
-
         <HorizontalStackLayout
             HorizontalOptions="Center"
             VerticalOptions="Start"
@@ -170,7 +76,7 @@
             <Border Style="{StaticResource ScoreBorder}">
                 <Label
                     Style="{StaticResource ScoreLabel}"
-                    Text="{Binding TeamA}">
+                    Text="{Binding Game.FirstPlayer.TeamName}">
                 </Label>
             </Border>
 
@@ -181,7 +87,7 @@
                     <Label
                         Style="{StaticResource ScoreLabel}"
                         x:Name="scoreTeamA"
-                        Text="0">
+                        Text="{Binding Game.FirstPlayer.Score}">
                     </Label>
                     <Label
                         Style="{StaticResource ScoreLabel}"
@@ -190,7 +96,7 @@
                     <Label
                         Style="{StaticResource ScoreLabel}"
                         x:Name="scoreTeamB"
-                        Text="0">
+                        Text="{Binding Game.SecondPlayer.Score}">
                     </Label>
                 </HorizontalStackLayout>
             </Border>
@@ -198,7 +104,7 @@
             <Border Style="{StaticResource ScoreBorder}">
                 <Label
                     Style="{StaticResource ScoreLabel}"
-                    Text="{Binding TeamB}">
+                    Text="{Binding Game.SecondPlayer.TeamName}">
                 </Label>
             </Border>
         </HorizontalStackLayout>

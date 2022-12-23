@@ -1,4 +1,4 @@
-﻿using FootballLogicLib;
+﻿using FootballLogicLib.Models;
 using Protocol;
 using Protocol.Packets;
 using Protocol.Protocol;

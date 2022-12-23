@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FootballLogicLib
+namespace FootballLogicLib.Models
 {
     public class Ball
     {

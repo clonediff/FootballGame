@@ -1,42 +1,20 @@
-using FootballLogicLib;
 using UIApplication.Connection;
+using UIApplication.ViewModels;
 
 namespace UIApplication.Views;
 
 public partial class LobbyPage : ContentPage
 {
-	public LobbyPage(string team)
+	public LobbyPage(LobbyViewModel viewModel)
 	{
 		InitializeComponent();
-
-		ConnectionManager.Team = team;
-		Task.Run(ConnectionManager.ConnectAndRunAsync);
-
-		ConnectionManager.OnConnect += ProccessConnectAsync;
-		ConnectionManager.OnPlayersList += ProccessPlayersList;
-	}
-
-    private void ProccessPlayersList(Player[] players)
-    {
-        Shell.Current.Dispatcher.Dispatch(() =>
-        {
-			foreach (var player in players)
-				Players.Add(GetPlayerLabel(player));
-        });
+        BindingContext = viewModel;
     }
 
-    private void ProccessConnectAsync(Player player)
+    protected override void OnNavigatedTo(NavigatedToEventArgs args)
     {
-		Shell.Current.Dispatcher.Dispatch(() =>
-		{
-			Players.Add(GetPlayerLabel(player));
-		});
-    }
-
-	private Label GetPlayerLabel(Player player)
-	{
-        var label = new Label();
-        label.Text = $"{player.Id}: {player.TeamName}";
-        return label;
+        base.OnNavigatedTo(args);
+        ConnectionManager.Team = (BindingContext as LobbyViewModel).Players[0].TeamName;
+        Task.Run(ConnectionManager.ConnectAndRunAsync);
     }
 }

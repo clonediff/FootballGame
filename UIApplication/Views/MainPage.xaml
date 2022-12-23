@@ -1,7 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodel="clr-namespace:UIApplication.ViewModels"
              x:Class="UIApplication.Views.MainPage"
+             x:DataType="viewmodel:MainViewModel"
              BackgroundImageSource="mainpage_bg.jpg">
 
     <ScrollView>
@@ -14,7 +16,7 @@
                 HorizontalOptions="Center"
                 Spacing="100">
                 <Picker 
-                    x:Name="YourPck"
+                    x:Name="YourPick"
                     Title="Select your team">
                     <Picker.Items>
                         <x:String>ARG</x:String>
@@ -51,60 +53,22 @@
                         <x:String>WAL</x:String>
                     </Picker.Items>
                 </Picker>
-
-                <!--<Picker 
-                    x:Name="OpponentPck"
-                    Title="Select opponent team">
-                    <Picker.Items>
-                        <x:String>ARG</x:String>
-                        <x:String>AUS</x:String>
-                        <x:String>BEL</x:String>
-                        <x:String>BRA</x:String>
-                        <x:String>CAN</x:String>
-                        <x:String>CMR</x:String>
-                        <x:String>CRC</x:String>
-                        <x:String>CRO</x:String>
-                        <x:String>DEN</x:String>
-                        <x:String>ECU</x:String>
-                        <x:String>ENG</x:String>
-                        <x:String>ESP</x:String>
-                        <x:String>FRA</x:String>
-                        <x:String>GER</x:String>
-                        <x:String>GHA</x:String>
-                        <x:String>IRI</x:String>
-                        <x:String>JAP</x:String>
-                        <x:String>KOR</x:String>
-                        <x:String>KSA</x:String>
-                        <x:String>MAR</x:String>
-                        <x:String>MEX</x:String>
-                        <x:String>NED</x:String>
-                        <x:String>POL</x:String>
-                        <x:String>POR</x:String>
-                        <x:String>QAT</x:String>
-                        <x:String>SEN</x:String>
-                        <x:String>SRB</x:String>
-                        <x:String>SUI</x:String>
-                        <x:String>TUN</x:String>
-                        <x:String>URU</x:String>
-                        <x:String>USA</x:String>
-                        <x:String>WAL</x:String>
-                    </Picker.Items>
-                </Picker>-->
             </HorizontalStackLayout>
 
             <Label
                 x:Name="ErrorLbl"
                 Text="Chose all options"
                 HorizontalOptions="Center"
-                IsVisible="False">
-
+                IsVisible="{Binding IsPickerEmpty}">
             </Label>
 
             <Button
                 x:Name="StartBtn"
                 Text="Start game"
-                Clicked="OnStartClicked"
-                HorizontalOptions="Center" />
+                CommandParameter="{Binding Source={x:Reference YourPick}, Path=SelectedItem}"
+                Command="{Binding GoToLobbyCommand}"
+                HorizontalOptions="Center">
+            </Button>
 
         </VerticalStackLayout>
     </ScrollView>

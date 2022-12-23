@@ -1,9 +1,9 @@
-using FootballLogicLib;
 using UIApplication.Connection;
 using Dapplo.Windows.Input.Enums;
 using Dapplo.Windows.Input.Keyboard;
 using System.Reactive.Linq;
 using Point = Microsoft.Maui.Graphics.Point;
+using UIApplication.ViewModels;
 
 namespace UIApplication.Views;
 
@@ -11,7 +11,7 @@ public partial class GamePage : ContentPage
 {
     private readonly IDispatcherTimer _timer;
     private TimeSpan _time = TimeSpan.FromMinutes(3);
-    private readonly IDisposable _subscription;
+    private IDisposable _subscription;
 
     private const int _translationWithBall = 4;
     private const int _translationWithOutBall = 6;
@@ -20,7 +20,7 @@ public partial class GamePage : ContentPage
 
     private event Action<Image> _goalScored;
 
-    public GamePage(Game game)
+    public GamePage(GameViewModel viewModel)
     {
         InitializeComponent();
 
@@ -28,32 +28,30 @@ public partial class GamePage : ContentPage
             .Where(h => h.IsKeyDown)
             .Subscribe(KeyDown);
 
-        timer.Text = $"{_time.Minutes}:{_time.Seconds}";
+        timer.Text = $"{_time.Minutes}:{_time.Seconds:00}";
 
         _timer = Dispatcher.CreateTimer();
         _timer.Interval = TimeSpan.FromMilliseconds(1000);
         _timer.Tick += (s, e) =>
         {
-            timer.Text = $"{_time.Minutes}:{_time.Seconds}";
+            timer.Text = $"{_time.Minutes}:{_time.Seconds:00}";
 
             if (_time == TimeSpan.Zero)
+            {
                 _timer.Stop();
+            }
             else
                 _time = _time.Add(TimeSpan.FromSeconds(-1));
         };
-
         _timer.Start();
-
-        // game.TeamAImageSource = $"{game.TeamA.ToLower()}.jpg";
-        // game.TeamBImageSource = $"{game.TeamB.ToLower()}.jpg";
-
-        BindingContext = game;
 
         _goalScored += OnGoalScored;
 
         Task.Run(ConnectionManager.ConnectAndRunAsync);
 
         ConnectionManager.OnCantConnect += OnCantConnect;
+
+        BindingContext = viewModel;
     }
 
     private void OnGoalScored(Image goal)
@@ -79,7 +77,7 @@ public partial class GamePage : ContentPage
         Dispatcher.Dispatch(async () =>
         {
             await DisplayAlert("�� ������� ������������", "AAAAAAAAAAAAA", "����");
-            await Shell.Current.Navigation.PopAsync();
+            await Shell.Current.GoToAsync("..");
         });
         
     }
@@ -101,87 +99,43 @@ public partial class GamePage : ContentPage
         switch (args.Key)
         {
             case VirtualKeyCode.KeyA:
-            {
                 Move(imgTeamA, imgTeamB, imgBall,
                     (deltaX) => imgTeamA.TranslationX -= deltaX,
                     (deltaX) => imgBall.TranslationX -= deltaX,
                     (player, item) => player.X > item.X,
                     Direction.Left, args.IsShift);
-            }
-            break;
+                break;
             case VirtualKeyCode.KeyD:
-            {
                 Move(imgTeamA, imgTeamB, imgBall,
                     (deltaX) => imgTeamA.TranslationX += deltaX,
                     (deltaX) => imgBall.TranslationX += deltaX,
                     (player, item) => player.X < item.X,
                     Direction.Right, args.IsShift);
-            }
-            break;
+                break;
             case VirtualKeyCode.KeyW:
-            {
                 Move(imgTeamA, imgTeamB, imgBall,
                     (deltaY) => imgTeamA.TranslationY -= deltaY,
                     (deltaY) => imgBall.TranslationY -= deltaY,
                     (player, item) => player.Y > item.Y,
                     Direction.Up, args.IsShift);
-            }
-            break;
+                break;
             case VirtualKeyCode.KeyS:
-            {
                 Move(imgTeamA, imgTeamB, imgBall,
                     (deltaY) => imgTeamA.TranslationY += deltaY,
                     (deltaY) => imgBall.TranslationY += deltaY,
                     (player, item) => player.Y < item.Y,
                     Direction.Down, args.IsShift);
-            } 
-            break;
+                break;
             case VirtualKeyCode.Up:
                 HandleRotateCondition(-_angle, imgTeamA, imgTeamB, imgBall);
                 break;
             case VirtualKeyCode.Down:
                 HandleRotateCondition(_angle, imgTeamA, imgTeamB, imgBall);
                 break;
-            case VirtualKeyCode.Space:
+            case VirtualKeyCode.KeyQ:
                 Shot(imgTeamA, imgTeamB, imgBall);
                 break;
         }
-    }
-
-    private void OnUpClickedTeam(object sender, EventArgs e)
-    {
-        Move(imgTeamB, imgTeamA, imgBall, 
-            (deltaY) => imgTeamB.TranslationY -= deltaY, 
-            (deltaY) => imgBall.TranslationY -= deltaY,
-            (item1, item2) => item1.Y > item2.Y,
-            Direction.Up, false);
-    }
-
-    private void OnDownClickedTeam(object sender, EventArgs e)
-    {
-        Move(imgTeamB, imgTeamA, imgBall, 
-            (deltaY) => imgTeamB.TranslationY += deltaY, 
-            (deltaY) => imgBall.TranslationY += deltaY,
-            (item1, item2) => item1.Y < item2.Y,
-            Direction.Down, false);
-    }
-
-    private void OnLeftClickedTeam(object sender, EventArgs e)
-    {
-        Move(imgTeamB, imgTeamA, imgBall, 
-            (deltaX) => imgTeamB.TranslationX -= deltaX, 
-            (deltaX) => imgBall.TranslationX -= deltaX,
-            (item1, item2) => item1.X > item2.X,
-            Direction.Left, false);
-    }
-
-    private void OnRightClickedTeam(object sender, EventArgs e)
-    {
-        Move(imgTeamB, imgTeamA, imgBall, 
-            (deltaX) => imgTeamB.TranslationX += deltaX, 
-            (deltaX) => imgBall.TranslationX += deltaX,
-            (item1, item2) => item1.X < item2.X,
-            Direction.Right, false);
     }
 
     private bool CheckGoal()
@@ -406,16 +360,6 @@ public partial class GamePage : ContentPage
         return candidates;
     }
 
-    private void OnRightRotate(object sender, EventArgs e)
-    { 
-        HandleRotateCondition(_angle, imgTeamB, imgTeamA, imgBall);
-    }
-
-    private void OnLeftRotate(object sender, EventArgs e)
-    {
-        HandleRotateCondition(-_angle, imgTeamB, imgTeamA, imgBall);
-    }
-
     private void HandleRotateCondition(double angle, Image player, Image opponent, Image ball)
     {
         var ballCenter = GetItemCenter(ball);
@@ -490,11 +434,6 @@ public partial class GamePage : ContentPage
         return new Point(
             item.X + item.TranslationX + item.WidthRequest / 2,
             item.Y + item.TranslationY + item.WidthRequest / 2);
-    }
-
-    private void OnShotPressed(object sender, EventArgs e)
-    {
-        Shot(imgTeamB, imgTeamA, imgBall);
     }
 
     private async void Shot(Image player, Image opponent, Image ball)
