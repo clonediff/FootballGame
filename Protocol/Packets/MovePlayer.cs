@@ -1,4 +1,5 @@
-﻿using Protocol.Protocol;
+﻿using FootballLogicLib;
+using Protocol.Protocol;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -14,6 +15,12 @@ namespace Protocol.Packets
         public string Id;
 
         [Field(1)]
-        public Point Direction;
+        public Direction Direction;
+
+        [Field(2)]
+        public int PlayerTranslation;
+
+        [Field(3)]
+        public int BallTranslation;
     }
 }

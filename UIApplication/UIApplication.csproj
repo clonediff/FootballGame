@@ -50,6 +50,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Images\goal_left.jpg" />
+	  <None Remove="Resources\Images\goal_right.jpg" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
 		<PackageReference Include="Dapplo.Windows.Input" Version="1.0.28" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />

@@ -31,6 +31,32 @@ public partial class LobbyPage : ContentPage
 
         ConnectionManager.OnPlayerDisconnect += ProccessPlayerDisconnect;
         ConnectionManager.OnReadyStateChanged += ProccessStateChanged;
+        ConnectionManager.OnGameReady += ProccessGameState;
+
+        ConnectionManager.OnGameStart += ProccessGameStartAsync;
+    }
+
+    private void ProccessGameStartAsync(Player player1, Player player2)
+    {
+        _gameStarted = true;
+        var game = new Game(player1, player2);
+        Dispatcher.Dispatch(async() =>
+        {
+            Shell.Current.Navigation.RemovePage(this);
+            await Shell.Current.GoToAsync(nameof(GamePage), true, new Dictionary<string, object>()
+            {
+                ["Game"] = game
+            });
+        });
+    }
+
+    private void ProccessGameState(bool gameReady)
+    {
+        Dispatcher.Dispatch(() =>
+        {
+            StartGameBtn.IsVisible = gameReady;
+            StartGameBtn.IsEnabled = gameReady;
+        });
     }
 
     private void ProccessStateChanged(string id, bool ready)
@@ -39,10 +65,8 @@ public partial class LobbyPage : ContentPage
         {
             Dispatcher.Dispatch(() =>
             {
-                if (ready)
-                    label.BackgroundColor = Color.Parse("Green");
-                else
-                    label.BackgroundColor = Color.Parse("Red");
+                var color = ready ? "Green" : "Red";
+                label.BackgroundColor = Color.Parse(color);
             });
         }
         else
@@ -93,15 +117,15 @@ public partial class LobbyPage : ContentPage
         }
     }
 
-    private void ProccessPlayersList(Player[] players)
+    private void ProccessPlayersList(PlayerIsReadyStruct[] players)
     {
         var result = Dispatcher.Dispatch(() =>
         {
-			foreach (var player in players)
+			foreach (var playerInfo in players)
 			{
-				var label = GetPlayerLabel(player);
+				var label = GetPlayerLabel(playerInfo.Player, playerInfo.IsReady);
                 Players.Add(label);
-				labels[player.Id] = label;
+				labels[playerInfo.Player.Id] = label;
 			}
         });
     }
@@ -110,16 +134,18 @@ public partial class LobbyPage : ContentPage
     {
 		var result = Dispatcher.Dispatch(() =>
 		{
-			var label = GetPlayerLabel(player);
+			var label = GetPlayerLabel(player, false);
 			labels[player.Id] = label;
             Players.Add(label);
 		});
     }
 
-	private Label GetPlayerLabel(Player player)
+	private Label GetPlayerLabel(Player player, bool ready)
 	{
         var label = new Label();
         label.Text = $"{player.Id}: {player.TeamName}";
+        var color = ready ? "GREEN" : "RED";
+        label.BackgroundColor = Color.Parse(color);
         return label;
     }
 
@@ -134,5 +160,6 @@ public partial class LobbyPage : ContentPage
         ConnectionManager.OnCantConnect -= ProccesCantConnect;
         ConnectionManager.OnPlayerDisconnect -= ProccessPlayerDisconnect;
         ConnectionManager.OnReadyStateChanged -= ProccessStateChanged;
+        ConnectionManager.OnGameReady -= ProccessGameState;
     }
 }

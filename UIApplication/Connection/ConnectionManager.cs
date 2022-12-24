@@ -22,9 +22,13 @@ namespace UIApplication.Connection
 
         public static event Action<string> OnCantConnect;
         public static event Action<Player> OnConnect;
-        public static event Action<Player[]> OnPlayersList;
+        public static event Action<PlayerIsReadyStruct[]> OnPlayersList;
         public static event Action<string> OnPlayerDisconnect;
         public static event Action<string, bool> OnReadyStateChanged;
+        public static event Action<bool> OnGameReady;
+        public static event Action<Player, Player> OnGameStart;
+
+        public static string Id { get; set; }
 
         public static async Task ConnectAndRunAsync(string team)
         {
@@ -53,6 +57,7 @@ namespace UIApplication.Connection
                 }
                 catch (Exception e)
                 {
+                    Disconnect();
                     break;
                 }
             }
@@ -63,6 +68,10 @@ namespace UIApplication.Connection
             var packetType = PacketTypeManager.GetTypeFromPacket(packet);
             switch (packetType)
             {
+                case PacketType.SendId:
+                    var id = PacketConverter.Deserialize<SendId>(packet);
+                    Id = id.Id;
+                    break;
                 case PacketType.CantConnect:
                     var cantConnect = PacketConverter.Deserialize<CantConnect>(packet);
                     OnCantConnect(cantConnect.Id);
@@ -82,6 +91,14 @@ namespace UIApplication.Connection
                 case PacketType.ReadyState:
                     var state = PacketConverter.Deserialize<PlayerReadyState>(packet);
                     OnReadyStateChanged(state.Id, state.IsReady);
+                    break;
+                case PacketType.GameReady:
+                    var gameReady = PacketConverter.Deserialize<GameReady>(packet);
+                    OnGameReady(gameReady.IsReady);
+                    break;
+                case PacketType.StartGame:
+                    var gameStart = PacketConverter.Deserialize<GameStart>(packet);
+                    OnGameStart(gameStart.Player1, gameStart.Player2);
                     break;
             }
         }

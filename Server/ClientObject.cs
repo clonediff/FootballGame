@@ -40,7 +40,8 @@ namespace Server
             ProccesPackets = new()
             {
                 [PacketType.Connect] = ProccessPlayerConnect,
-                [PacketType.ReadyState] = ProccessReadyStateChange
+                [PacketType.ReadyState] = ProccessReadyStateChange,
+                [PacketType.StartGame] = ProccessGameStart
             };
         }
 
@@ -57,10 +58,11 @@ namespace Server
                     } catch
                     {
                         // покинуть
-                        Console.WriteLine($"Игрок {Id} покинул игру");
                         await server.BroadcastPacketAsync(PacketConverter.Serialize(
                             PacketType.Disconnect,
                             new DisconnectPlayer { Id = Id }));
+                        server._lobby.RemovePlayer(Player);
+                        Console.WriteLine($"Игрок {Id} покинул игру");
                         break;
                     }
                 }
@@ -87,12 +89,29 @@ namespace Server
             }
         }
 
+        private async Task ProccessGameStart(Packet packet)
+        {
+            var gameStart = PacketConverter.Deserialize<GameStart>(packet);
+            gameStart.Player1 = server._lobby.Players[0];
+            gameStart.Player2 = server._lobby.Players[1];
+            await server.BroadcastPacketAsync(
+                PacketConverter.Serialize(PacketType.StartGame,
+                gameStart));
+            Console.WriteLine($"Игра началась между {gameStart.Player1.TeamName} и {gameStart.Player2.TeamName}");
+        }
+        
         private async Task ProccessReadyStateChange(Packet packet)
         {
             var playerState = PacketConverter.Deserialize<PlayerReadyState>(packet);
             playerState.Id = Id;
             await server.BroadcastPacketAsync(
                 PacketConverter.Serialize(PacketType.ReadyState, playerState));
+            server._lobby.ReadyPlayers[Id] = playerState.IsReady;
+
+            await server.BroadcastPacketAsync(PacketConverter.Serialize(
+                PacketType.GameReady,
+                new GameReady { IsReady = server._lobby.ReadyPlayers.All(x => x.Value) && server._lobby.Players.Count == 2 }));
+            
             Console.WriteLine($"Игрое {Id} {(playerState.IsReady ? "" : "не")} готов к игре");
         }
         
@@ -104,6 +123,7 @@ namespace Server
             connect.Id = Id;
             await server.BroadcastPacketAsync(
                 PacketConverter.Serialize(PacketType.Connect, connect));
+            server._lobby.AddPlayer(Player);
             Console.WriteLine($"Игрок {Id} присоединился за команду {connect.Team}");
         }
 

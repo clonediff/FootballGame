@@ -18,6 +18,9 @@ namespace Protocol.Protocol
             PacketTypeManager.RegisterType(PacketType.PlayersList, 3);
             PacketTypeManager.RegisterType(PacketType.Disconnect, 4);
             PacketTypeManager.RegisterType(PacketType.ReadyState, 5);
+            PacketTypeManager.RegisterType(PacketType.GameReady, 6);
+            PacketTypeManager.RegisterType(PacketType.StartGame, 7);
+            PacketTypeManager.RegisterType(PacketType.SendId, 8);
         }
 
         public static void RegisterType(PacketType type, byte btype)

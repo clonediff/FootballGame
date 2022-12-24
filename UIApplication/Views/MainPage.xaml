@@ -17,7 +17,8 @@
                 Spacing="100">
                 <Picker 
                     x:Name="YourPick"
-                    Title="Select your team">
+                    Title="Select your team"
+                    BackgroundColor="White">
                     <Picker.Items>
                         <x:String>ARG</x:String>
                         <x:String>AUS</x:String>

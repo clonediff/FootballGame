@@ -13,6 +13,9 @@ namespace Protocol.Protocol
         CantConnect,
         PlayersList,
         Disconnect,
-        ReadyState
+        ReadyState,
+        GameReady,
+        StartGame,
+        SendId
     }
 }

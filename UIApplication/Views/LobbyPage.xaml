@@ -9,7 +9,8 @@
         <Button x:Name="ReadyBtn"
                 Text="Ready"
                 WidthRequest="100" 
-                Clicked="ChangeReadyState"/>
+                Clicked="ChangeReadyState"
+                BackgroundColor="Green"/>
 
         <VerticalStackLayout x:Name="Players">
         
@@ -20,7 +21,9 @@
             Text="GO!"
             WidthRequest="100" 
             CommandParameter="{Binding Players}"
-            Command="{Binding GoToGameCommand}">
+            Command="{Binding GoToGameCommand}"
+            IsVisible="False"
+            IsEnabled="False">
         </Button>
     </VerticalStackLayout>
 </ContentPage>

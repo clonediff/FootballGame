@@ -17,7 +17,8 @@ namespace Server
         TcpListener tcpListener = new TcpListener(IPAddress.Any, Constants.PORT);
         Dictionary<string, ClientObject> clients = new();
 
-        Dictionary<ClientObject, Game> games = new();
+        internal Lobby _lobby = new();
+        internal Game _game;
 
         protected internal void RemoveConnection(string id)
         {
@@ -38,6 +39,10 @@ namespace Server
                     TcpClient tcpClient = await tcpListener.AcceptTcpClientAsync();
                     ClientObject clientObject = new ClientObject(tcpClient, this);
 
+                    var sendId = new SendId { Id = clientObject.Id };
+                    await clientObject.Stream.WritePacketAsync(
+                        PacketConverter.Serialize(PacketType.SendId, sendId));
+                    
                     if (clients.Count >= 2)
                     {
                         var cantConnect = new CantConnect
@@ -78,7 +83,11 @@ namespace Server
             {
                 var players = clients
                     .Where(x => x.Key != id)
-                    .Select(keyValue => keyValue.Value.Player)
+                    .Select(x => new PlayerIsReadyStruct
+                    {
+                        Player = x.Value.Player,
+                        IsReady = _lobby.ReadyPlayers[x.Value.Player.Id]
+                    })
                     .ToArray();
                 await reciever.Stream.WritePacketAsync(
                     PacketConverter.Serialize(PacketType.PlayersList, 

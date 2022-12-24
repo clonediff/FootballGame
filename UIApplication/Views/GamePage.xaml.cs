@@ -5,6 +5,8 @@ using System.Reactive.Linq;
 using Point = Microsoft.Maui.Graphics.Point;
 using UIApplication.ViewModels;
 using FootballLogicLib;
+using Windows.ApplicationModel.Activation;
+using Protocol.Packets;
 
 namespace UIApplication.Views;
 
@@ -35,9 +37,6 @@ public partial class GamePage : ContentPage
         _goalScored += OnGoalScored;
         BindingContext = viewModel;
         _viewModel = viewModel;
-
-        //Task.Run(ConnectionManager.ConnectAndRunAsync);
-        //ConnectionManager.OnCantConnect += OnCantConnect;
     }
 
     protected override void OnNavigatedTo(NavigatedToEventArgs args)
@@ -65,72 +64,102 @@ public partial class GamePage : ContentPage
             scoreTeamA.Text = (++score).ToString();
         }
     }
-    public void OnCantConnect()
-    {
-        Dispatcher.Dispatch(async () =>
-        {
-            await DisplayAlert("�� ������� ������������", "AAAAAAAAAAAAA", "����");
-            await Shell.Current.Navigation.PopAsync();
-        });
-    }
+
     protected override void OnDisappearing()
     {
         ConnectionManager.Disconnect();
-        //ConnectionManager.OnCantConnect -= OnCantConnect;
     }
+
+
 
     private void KeyDown(KeyboardHookEventArgs args)
     {
+        Image yourPlayer;
+        Image opponentPlayer;
+
+        if (ConnectionManager.Id == _viewModel.Game.FirstPlayer.Id)
+        {
+            yourPlayer = imgTeamA;
+            opponentPlayer = imgTeamB;
+        }
+        else if (ConnectionManager.Id == _viewModel.Game.SecondPlayer.Id)
+        {
+            yourPlayer = imgTeamB;
+            opponentPlayer = imgTeamA;
+        }
+        else
+            throw new ArgumentException();
+
+        switch (args.Key)
+        {
+            case VirtualKeyCode.KeyA or
+                VirtualKeyCode.KeyD or
+                VirtualKeyCode.KeyW or
+                VirtualKeyCode.KeyS or
+                VirtualKeyCode.Space:
+                new MovePlayer
+                {
+                    Id = ConnectionManager.Id,
+                    Direction = Direction.Left
+                };
+                //ConnectionManager.SendPacketAsync(/**/);
+                break;
+            case VirtualKeyCode.Up or
+                VirtualKeyCode.Down:
+
+                break;
+        }
+
         switch (args.Key)
         {
             case VirtualKeyCode.KeyA:
-                var translation = _logic.MovePlayer(GetItemCenter(imgTeamA).ToSystemPoint(), GetItemCenter(imgTeamB).ToSystemPoint(), GetItemCenter(imgBall).ToSystemPoint(),
+                var translation = _logic.MovePlayer(GetItemCenter(yourPlayer).ToSystemPoint(), GetItemCenter(opponentPlayer).ToSystemPoint(), GetItemCenter(imgBall).ToSystemPoint(),
                     (item1, item2) => item1.X > item2.X,
                     Direction.Left, args.IsShift);
-                imgTeamA.TranslationX -= translation.player;
+                yourPlayer.TranslationX -= translation.player;
                 imgBall.TranslationX -= translation.ball;
                 CheckGoal();
                 break;
             case VirtualKeyCode.KeyD:
-                translation = _logic.MovePlayer(GetItemCenter(imgTeamA).ToSystemPoint(), GetItemCenter(imgTeamB).ToSystemPoint(), GetItemCenter(imgBall).ToSystemPoint(),
+                translation = _logic.MovePlayer(GetItemCenter(yourPlayer).ToSystemPoint(), GetItemCenter(opponentPlayer).ToSystemPoint(), GetItemCenter(imgBall).ToSystemPoint(),
                     (item1, item2) => item1.X < item2.X,
                     Direction.Right, args.IsShift);
-                imgTeamA.TranslationX += translation.player;
+                yourPlayer.TranslationX += translation.player;
                 imgBall.TranslationX += translation.ball;
                 CheckGoal();
                 break;
             case VirtualKeyCode.KeyW:
-                translation = _logic.MovePlayer(GetItemCenter(imgTeamA).ToSystemPoint(), GetItemCenter(imgTeamB).ToSystemPoint(), GetItemCenter(imgBall).ToSystemPoint(),
+                translation = _logic.MovePlayer(GetItemCenter(yourPlayer).ToSystemPoint(), GetItemCenter(opponentPlayer).ToSystemPoint(), GetItemCenter(imgBall).ToSystemPoint(),
                     (item1, item2) => item1.Y > item2.Y,
                     Direction.Up, args.IsShift);
-                imgTeamA.TranslationY -= translation.player;
+                yourPlayer.TranslationY -= translation.player;
                 imgBall.TranslationY -= translation.ball;
                 CheckGoal();
                 break;
             case VirtualKeyCode.KeyS:
-                translation = _logic.MovePlayer(GetItemCenter(imgTeamA).ToSystemPoint(), GetItemCenter(imgTeamB).ToSystemPoint(), GetItemCenter(imgBall).ToSystemPoint(),
+                translation = _logic.MovePlayer(GetItemCenter(yourPlayer).ToSystemPoint(), GetItemCenter(opponentPlayer).ToSystemPoint(), GetItemCenter(imgBall).ToSystemPoint(),
                     (item1, item2) => item1.Y < item2.Y,
                     Direction.Down, args.IsShift);
-                imgTeamA.TranslationY += translation.player;
+                yourPlayer.TranslationY += translation.player;
                 imgBall.TranslationY += translation.ball;
                 CheckGoal();
                 break;
             case VirtualKeyCode.Up:
-                var rotation = _logic.RotateBall(-_angle, GetItemCenter(imgTeamA).ToSystemPoint(), GetItemCenter(imgTeamB).ToSystemPoint(), GetItemCenter(imgBall).ToSystemPoint(),
+                var rotation = _logic.RotateBall(-_angle, GetItemCenter(yourPlayer).ToSystemPoint(), GetItemCenter(opponentPlayer).ToSystemPoint(), GetItemCenter(imgBall).ToSystemPoint(),
                     imgBall.X, imgBall.Y, imgBall.TranslationX, imgBall.TranslationY);
                 imgBall.TranslationX = rotation.dx;
                 imgBall.TranslationY = rotation.dy;
                 CheckGoal();
                 break;
             case VirtualKeyCode.Down:
-                rotation = _logic.RotateBall(_angle, GetItemCenter(imgTeamA).ToSystemPoint(), GetItemCenter(imgTeamB).ToSystemPoint(), GetItemCenter(imgBall).ToSystemPoint(),
+                rotation = _logic.RotateBall(_angle, GetItemCenter(yourPlayer).ToSystemPoint(), GetItemCenter(opponentPlayer).ToSystemPoint(), GetItemCenter(imgBall).ToSystemPoint(),
                     imgBall.X, imgBall.Y, imgBall.TranslationX, imgBall.TranslationY);
                 imgBall.TranslationX = rotation.dx;
                 imgBall.TranslationY = rotation.dy;
                 CheckGoal();
                 break;
             case VirtualKeyCode.Space:
-                Shot(imgTeamA, imgTeamB, imgBall);
+                Shot(yourPlayer, opponentPlayer, imgBall);
                 break;
         }
     }

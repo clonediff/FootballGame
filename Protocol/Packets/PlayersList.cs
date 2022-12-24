@@ -11,6 +11,12 @@ namespace Protocol.Packets
     public class PlayersList
     {
         [Field(0)]
-        public Player[] Players;
+        public PlayerIsReadyStruct[] Players;
+    }
+
+    public struct PlayerIsReadyStruct
+    {
+        public Player Player { get; set; }
+        public  bool IsReady { get; set; }
     }
 }

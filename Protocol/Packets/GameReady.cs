@@ -1,5 +1,4 @@
-﻿using FootballLogicLib;
-using Protocol.Protocol;
+﻿using Protocol.Protocol;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,12 +7,9 @@ using System.Threading.Tasks;
 
 namespace Protocol.Packets
 {
-    public class GameStart
+    public class GameReady
     {
         [Field(0)]
-        public Player Player1;
-
-        [Field(1)]
-        public Player Player2;
+        public bool IsReady;
     }
 }
