@@ -42,6 +42,10 @@ public partial class GamePage : ContentPage
     protected override void OnNavigatedTo(NavigatedToEventArgs args)
     {
         base.OnNavigatedTo(args);
+
+        Window.Width = 1152;
+        Window.Height = 592;
+
         imgTeamA.Source = $"{_viewModel.Game.FirstPlayer.TeamName.ToLower()}.jpg";
         imgTeamB.Source = $"{_viewModel.Game.SecondPlayer.TeamName.ToLower()}.jpg";
         _viewModel.StartTimer();
@@ -89,26 +93,6 @@ public partial class GamePage : ContentPage
         }
         else
             throw new ArgumentException();
-
-        switch (args.Key)
-        {
-            case VirtualKeyCode.KeyA or
-                VirtualKeyCode.KeyD or
-                VirtualKeyCode.KeyW or
-                VirtualKeyCode.KeyS or
-                VirtualKeyCode.Space:
-                new MovePlayer
-                {
-                    Id = ConnectionManager.Id,
-                    Direction = Direction.Left
-                };
-                //ConnectionManager.SendPacketAsync(/**/);
-                break;
-            case VirtualKeyCode.Up or
-                VirtualKeyCode.Down:
-
-                break;
-        }
 
         switch (args.Key)
         {

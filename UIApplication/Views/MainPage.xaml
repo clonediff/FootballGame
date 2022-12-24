@@ -18,6 +18,7 @@
                 <Picker 
                     x:Name="YourPick"
                     Title="Select your team"
+                    TitleColor="White"
                     BackgroundColor="White">
                     <Picker.Items>
                         <x:String>ARG</x:String>
